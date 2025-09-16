@@ -1,0 +1,927 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>ForceControl</title>
+
+    <meta http-equiv="Content-Type" content="text/html; charset=UTF-8">
+    <!-- <meta name="author" content="anonymous"> -->
+    <!-- <meta name="description" content=""> -->
+    <meta name="viewport" content="width=800px, initial-scale=0.8, maximum-scale=2.0, user-scalable=yes">
+    <meta name="google-site-verification" content="ky_GtW3ix1x6MhH-pM6PonkpJCmE-237rRUvxvyQjVs" />
+
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Google+Sans|Noto+Sans|Castoro">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0-beta3/css/all.min.css">
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/gh/jpswalsh/academicons@1/css/academicons.min.css">
+    <link rel="stylesheet" href="./static/css/bulma.min.css">
+    <link rel="stylesheet" href="./static/css/bulma-carousel.min.css">
+    <link rel="stylesheet" href="./static/css/bulma-slider.min.css">
+    <link rel="stylesheet" href="./static/css/fontawesome.all.min.css">
+    <link rel="stylesheet" href="./static/css/index.css">
+    <link rel="icon" href="./static/image/favicon.png">
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script defer src="./static/js/fontawesome.all.min.js"></script>
+    <script src="./static/js/bulma-carousel.min.js"></script>
+    <script src="./static/js/bulma-slider.min.js"></script>
+    <script src="./static/js/index.js"></script>
+
+    <!-- MathJax -->
+    <script type="text/javascript" async src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/2.7.7/MathJax.js?config=TeX-MML-AM_CHTML"></script>        
+    <script type="text/x-mathjax-config">
+      MathJax.Hub.Config({
+        tex2jax: {inlineMath: [['$','$'], ['\\(','\\)']]},
+      });
+    </script>
+
+    <!-- visitor statistics -->
+    <script async src="//busuanzi.ibruce.info/busuanzi/2.3/busuanzi.pure.mini.js"></script>
+
+    <!-- model-viewer -->
+    <script type="module" src="https://ajax.googleapis.com/ajax/libs/model-viewer/3.5.0/model-viewer.min.js"></script>
+  </head>
+
+
+  <body>
+    <!-- Title -->
+    <section class="hero">
+      <div class="hero-body">
+        <div class="container is-max-desktop">
+          <div class="columns is-centered">
+            <div class="column has-text-centered">
+              <h1 class="title is-1 publication-title">Force Prediction and Control of a Dexterous Hand for Physical Human-Robot Contact</h1>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section> 
+
+    <!-- Intro Video -->
+    <!-- <section class="hero teaser">
+      <div class="container is-max-desktop">
+        <div class="hero-body">
+          <video id="intro" controls playsinline height="100%" class="video-with-border">
+            <source src="./static/data/intro_video.mp4" type="video/mp4">
+          </video>
+        </div>
+      </div>
+    </section> -->
+
+    <section class="section">
+      <div class="container is-max-desktop">
+        <!-- Abstract -->
+        <div class="columns is-centered has-text-centered">
+          <div class="column is-four-fifths">
+            <h2 class="title is-3">Abstract</h2>
+            <div class="content has-text-justified">
+              <p>
+                Safe and effective physical interaction between dexterous robot hands and the human body will be essential for assistive applications. However, it remains a significant challenge due to complexities in accurately estimating and controlling contact forces on deformable surfaces with high-dimensional manipulators. 
+                We propose a force-aware control framework composed of two key components: (1) a force predictor that estimates a contact force map from point-cloud observations, and (2) a hierarchical force controller. 
+                This controller uniquely integrates a learning-based Koopman model for long-horizon trajectory planning with a differentiable optimization module that uses the predicted forces to compute fine-grained corrective actions. 
+                This allows the robot to achieve a target force distribution with high precision. We evaluate our method across five representative human-robot interaction tasks in simulation, and on real-world hardware using a pressure-sensing tablet and a tactile glove on a manikin. 
+                Results suggest that the proposed framework achieves accurate force prediction and control, significantly outperforming established baselines. 
+              </p>
+            </div>
+          </div>
+        </div>
+        <!--/ Abstract -->
+      </div>
+    </section>
+
+    <section class="section">
+      <div class="container is-max-desktop">
+        <!-- Overview -->
+        <div class="columns is-centered has-text-centered">
+          <div class="column is-four-fifths">
+            <h2 class="title is-3">Pipeline Overview</h2>
+            <div class="content has-text-justified">
+              <figure>
+                <img src="./static/image/pipeline.png" alt="Overview of the Force Control framework">
+                <!-- <figcaption style="font-style: normal; font-size: 0.95em;">We propose <strong>Web2Grasp</strong> for autonomously obtaining robot grasp data by reconstructing Hand-Object meshes from Web images, re-targeting the humand hand pose to a robot hand pose, and aligning the object mesh with a pseudo ground-truth object mesh obtained via text-to-3D approaches. We demonstrate that the resulting dataset obtained via web images and not requiring any robot-specific teleoperation enables training a supervised learning model with strong grasping performance both in simulation and in the real-world. </figcaption> -->
+              </figure>
+            </div>
+          </div>
+        </div>
+        <!--/ Overview -->
+      </div>
+    </section>
+
+
+
+
+
+
+
+
+
+
+    <!-- Force Prediction Video Viewer -->
+    <section class="section">
+      <div class="container is-max-desktop">
+        <div class="columns is-centered">
+          <div class="column">
+            <h2 class="title is-3 has-text-centered">Force Prediction Results</h2>
+            <p class="has-text-centered" style="margin-top: -10px; margin-bottom: 20px; font-style: italic;">
+              Comparison between ground truth and predicted force maps in simulation
+            </p>
+          </div>
+        </div>
+
+        <!-- Task Selection -->
+        <div class="columns is-centered" style="margin-bottom: 30px;">
+          <div class="column is-10">
+            <div class="buttons is-centered" id="predTaskSelector">
+              <button class="button is-success is-medium pred-task-btn active" onclick="selectPredTask('grasp')">
+                Grasp
+              </button>
+              <button class="button is-success is-medium pred-task-btn" onclick="selectPredTask('open')">
+                Open
+              </button>
+              <button class="button is-success is-medium pred-task-btn" onclick="selectPredTask('move')">
+                Move
+              </button>
+              <button class="button is-success is-medium pred-task-btn" onclick="selectPredTask('pat')">
+                Pat
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Case Selection -->
+        <div class="columns is-centered" style="margin-bottom: 20px;">
+          <div class="column is-8">
+            <div class="buttons is-centered" id="predCaseSelector">
+              <!-- Case buttons will be populated by JavaScript -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Task Information -->
+        <div class="columns is-centered" style="margin-bottom: 30px;">
+          <div class="column is-8">
+            <div class="notification is-light" style="text-align: center; border-left: 4px solid #48c774;">
+              <h4 class="title is-5" id="currentPredTaskName">Grasp Force Prediction</h4>
+              <p id="currentPredTaskDesc">Comparing ground truth and predicted force maps for grasping tasks</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Dual Video Display -->
+        <div class="columns is-centered">
+          <div class="column is-5">
+            <div class="box">
+              <h4 class="title is-5 has-text-centered">🎯 Ground Truth</h4>
+              <div class="video-wrapper" style="position: relative; border-radius: 8px; overflow: hidden;">
+                <video id="gtVideo" controls muted loop style="width: 100%; height: auto; max-height: 300px;">
+                  <source id="gtSource" src="static/data/sim_pred/grasp_gt_0.mp4" type="video/mp4">
+                  Your browser does not support the video tag.
+                </video>
+              </div>
+              <div class="content" style="margin-top: 10px; text-align: center;">
+                <p style="font-size: 0.9em; color: #4a4a4a;">
+                  <strong>Type:</strong> Ground Truth Force Map
+                </p>
+                <p style="font-size: 0.8em; font-family: monospace; background: #f5f5f5; padding: 4px 8px; border-radius: 4px; display: inline-block;" id="gtFilename">
+                  grasp_gt_0.mp4
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div class="column is-5">
+            <div class="box">
+              <h4 class="title is-5 has-text-centered">🤖 Predicted</h4>
+              <div class="video-wrapper" style="position: relative; border-radius: 8px; overflow: hidden;">
+                <video id="predVideo" controls muted loop style="width: 100%; height: auto; max-height: 300px;">
+                  <source id="predSource" src="static/data/sim_pred/grasp_pred_0.mp4" type="video/mp4">
+                  Your browser does not support the video tag.
+                </video>
+              </div>
+              <div class="content" style="margin-top: 10px; text-align: center;">
+                <p style="font-size: 0.9em; color: #4a4a4a;">
+                  <strong>Type:</strong> Predicted Force Map
+                </p>
+                <p style="font-size: 0.8em; font-family: monospace; background: #f5f5f5; padding: 4px 8px; border-radius: 4px; display: inline-block;" id="predFilename">
+                  grasp_pred_0.mp4
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Navigation Controls -->
+        <div class="columns is-centered" style="margin-top: 20px;">
+          <div class="column is-6">
+            <div class="buttons is-centered">
+              <button class="button is-dark" id="predPrevBtn" onclick="navigatePredCase(-1)">
+                <span class="icon">
+                  <i class="fas fa-chevron-left"></i>
+                </span>
+                <span>Previous Case</span>
+              </button>
+              <button class="button is-dark" id="predNextBtn" onclick="navigatePredCase(1)">
+                <span>Next Case</span>
+                <span class="icon">
+                  <i class="fas fa-chevron-right"></i>
+                </span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Status Information -->
+        <div class="columns is-centered" style="margin-top: 20px;">
+          <div class="column is-8">
+            <div class="notification is-success is-light" style="text-align: center;" id="predStatusInfo">
+              <p>Loaded Case 0: Grasp Force Prediction</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <script>
+      // Force Prediction Video Data Structure
+      const forcePredictionData = {
+        'grasp': {
+          name: 'Grasp Force Prediction',
+          description: 'Comparing ground truth and predicted force maps for grasping tasks',
+          cases: [
+            {
+              id: 'case_0',
+              name: 'Case 0',
+              gt: 'static/data/sim_pred/grasp_gt_0.mp4',
+              pred: 'static/data/sim_pred/grasp_pred_0.mp4'
+            },
+            {
+              id: 'case_1',
+              name: 'Case 1',
+              gt: 'static/data/sim_pred/grasp_gt_1.mp4',
+              pred: 'static/data/sim_pred/grasp_pred_1.mp4'
+            },
+            {
+              id: 'case_2',
+              name: 'Case 2',
+              gt: 'static/data/sim_pred/grasp_gt_2.mp4',
+              pred: 'static/data/sim_pred/grasp_pred_2.mp4'
+            }
+          ]
+        },
+        'open': {
+          name: 'Open Force Prediction',
+          description: 'Comparing ground truth and predicted force maps for opening tasks',
+          cases: [
+            {
+              id: 'case_0',
+              name: 'Case 0',
+              gt: 'static/data/sim_pred/open_gt_0.mp4',
+              pred: 'static/data/sim_pred/open_pred_0.mp4'
+            },
+            {
+              id: 'case_1',
+              name: 'Case 1',
+              gt: 'static/data/sim_pred/open_gt_1.mp4',
+              pred: 'static/data/sim_pred/open_pred_1.mp4'
+            },
+            {
+              id: 'case_2',
+              name: 'Case 2',
+              gt: 'static/data/sim_pred/open_gt_2.mp4',
+              pred: 'static/data/sim_pred/open_pred_2.mp4'
+            }
+          ]
+        },
+        'move': {
+          name: 'Move Force Prediction',
+          description: 'Comparing ground truth and predicted force maps for movement tasks',
+          cases: [
+            {
+              id: 'case_0',
+              name: 'Case 0',
+              gt: 'static/data/sim_pred/move_gt_0.mp4',
+              pred: 'static/data/sim_pred/move_pred_0.mp4'
+            },
+            {
+              id: 'case_1',
+              name: 'Case 1',
+              gt: 'static/data/sim_pred/move_gt_1.mp4',
+              pred: 'static/data/sim_pred/move_pred_1.mp4'
+            },
+            {
+              id: 'case_2',
+              name: 'Case 2',
+              gt: 'static/data/sim_pred/move_gt_2.mp4',
+              pred: 'static/data/sim_pred/move_pred_2.mp4'
+            }
+          ]
+        },
+        'pat': {
+          name: 'Pat Force Prediction',
+          description: 'Comparing ground truth and predicted force maps for patting tasks',
+          cases: [
+            {
+              id: 'case_0',
+              name: 'Case 0',
+              gt: 'static/data/sim_pred/pat_gt_0.mp4',
+              pred: 'static/data/sim_pred/pat_pred_0.mp4'
+            },
+            {
+              id: 'case_1',
+              name: 'Case 1',
+              gt: 'static/data/sim_pred/pat_gt_1.mp4',
+              pred: 'static/data/sim_pred/pat_pred_1.mp4'
+            },
+            {
+              id: 'case_2',
+              name: 'Case 2',
+              gt: 'static/data/sim_pred/pat_gt_2.mp4',
+              pred: 'static/data/sim_pred/pat_pred_2.mp4'
+            }
+          ]
+        }
+      };
+
+      let currentPredTask = 'grasp';
+      let currentPredCaseIndex = 0;
+
+      // Select a force prediction task
+      function selectPredTask(taskKey) {
+        currentPredTask = taskKey;
+        currentPredCaseIndex = 0;
+
+        // Update task button states
+        document.querySelectorAll('.pred-task-btn').forEach(btn => {
+          btn.classList.remove('is-warning');
+          btn.classList.add('is-success');
+        });
+        event.target.classList.remove('is-success');
+        event.target.classList.add('is-warning');
+
+        // Update task info
+        const task = forcePredictionData[taskKey];
+        document.getElementById('currentPredTaskName').textContent = task.name;
+        document.getElementById('currentPredTaskDesc').textContent = task.description;
+
+        // Populate case selector
+        populatePredCaseSelector();
+        
+        // Load first case
+        loadPredCase(0);
+        
+        updatePredStatus(`Selected task: ${task.name}`);
+      }
+
+      // Populate case selector buttons
+      function populatePredCaseSelector() {
+        const caseSelector = document.getElementById('predCaseSelector');
+        caseSelector.innerHTML = '';
+
+        const task = forcePredictionData[currentPredTask];
+        task.cases.forEach((caseData, index) => {
+          const button = document.createElement('button');
+          button.className = 'button is-small';
+          if (index === currentPredCaseIndex) {
+            button.classList.add('is-warning');
+          } else {
+            button.classList.add('is-light');
+          }
+          button.textContent = caseData.name;
+          button.onclick = () => loadPredCase(index);
+          caseSelector.appendChild(button);
+        });
+      }
+
+      // Load a specific force prediction case
+      function loadPredCase(caseIndex) {
+        const task = forcePredictionData[currentPredTask];
+        if (caseIndex < 0 || caseIndex >= task.cases.length) return;
+
+        currentPredCaseIndex = caseIndex;
+        const caseData = task.cases[caseIndex];
+
+        // Update case button states
+        const caseButtons = document.querySelectorAll('#predCaseSelector .button');
+        caseButtons.forEach((btn, index) => {
+          btn.classList.remove('is-warning', 'is-light');
+          btn.classList.add(index === caseIndex ? 'is-warning' : 'is-light');
+        });
+
+        // Load videos
+        const gtVideo = document.getElementById('gtVideo');
+        const predVideo = document.getElementById('predVideo');
+        const gtSource = document.getElementById('gtSource');
+        const predSource = document.getElementById('predSource');
+
+        gtSource.src = caseData.gt;
+        predSource.src = caseData.pred;
+
+        gtVideo.load();
+        predVideo.load();
+
+        // Auto-play videos after loading
+        gtVideo.addEventListener('canplaythrough', function() {
+          gtVideo.play().catch(e => console.log('Auto-play prevented:', e));
+        }, { once: true });
+        
+        predVideo.addEventListener('canplaythrough', function() {
+          predVideo.play().catch(e => console.log('Auto-play prevented:', e));
+        }, { once: true });
+
+        // Update filenames
+        document.getElementById('gtFilename').textContent = caseData.gt.split('/').pop();
+        document.getElementById('predFilename').textContent = caseData.pred.split('/').pop();
+
+        // Update navigation buttons
+        updatePredNavigationButtons();
+
+        updatePredStatus(`Loaded ${caseData.name} for ${task.name}`);
+      }
+
+      // Navigate between force prediction cases
+      function navigatePredCase(direction) {
+        const task = forcePredictionData[currentPredTask];
+        const newIndex = currentPredCaseIndex + direction;
+
+        if (newIndex >= 0 && newIndex < task.cases.length) {
+          loadPredCase(newIndex);
+        }
+      }
+
+      // Update navigation button states
+      function updatePredNavigationButtons() {
+        const task = forcePredictionData[currentPredTask];
+        const prevBtn = document.getElementById('predPrevBtn');
+        const nextBtn = document.getElementById('predNextBtn');
+
+        prevBtn.disabled = currentPredCaseIndex === 0;
+        nextBtn.disabled = currentPredCaseIndex === task.cases.length - 1;
+      }
+
+      // Update status message
+      function updatePredStatus(message) {
+        document.getElementById('predStatusInfo').innerHTML = `<p>${message}</p>`;
+      }
+
+      // Initialize force prediction section
+      document.addEventListener('DOMContentLoaded', function() {
+        populatePredCaseSelector();
+        loadPredCase(0);
+        updatePredNavigationButtons();
+      });
+
+      // Keyboard shortcuts for force prediction (when focused on prediction section)
+      document.addEventListener('keydown', function(event) {
+        // Check if we're in the prediction section
+        const predSection = event.target.closest('#predTaskSelector, #predCaseSelector') || 
+                           event.target.closest('#gtVideo, #predVideo');
+        if (predSection) {
+          switch(event.key) {
+            case 'ArrowLeft':
+              event.preventDefault();
+              navigatePredCase(-1);
+              break;
+            case 'ArrowRight':
+              event.preventDefault();
+              navigatePredCase(1);
+              break;
+            case ' ':
+              event.preventDefault();
+              // Toggle play/pause for both videos
+              const gtVideo = document.getElementById('gtVideo');
+              const predVideo = document.getElementById('predVideo');
+              if (gtVideo.paused) {
+                gtVideo.play();
+                predVideo.play();
+              } else {
+                gtVideo.pause();
+                predVideo.pause();
+              }
+              break;
+          }
+        }
+      });
+    </script>
+    <!--/ Force Prediction Video Viewer -->
+
+    <!-- Force Control Video Viewer -->
+    <section class="section">
+      <div class="container is-max-desktop">
+        <div class="columns is-centered">
+          <div class="column">
+            <h2 class="title is-3 has-text-centered">Force Control Demonstrations</h2>
+            <p class="has-text-centered" style="margin-top: -10px; margin-bottom: 20px; font-style: italic;">
+              Interactive visualization of robotic force control with different tasks and cases
+            </p>
+          </div>
+        </div>
+
+        <!-- Task Selection -->
+        <div class="columns is-centered" style="margin-bottom: 30px;">
+          <div class="column is-10">
+            <div class="buttons is-centered" id="taskSelector">
+              <button class="button is-primary is-medium task-btn active" onclick="selectTask('Wiping')">
+                Wiping on Senselmorph
+              </button>
+              <button class="button is-primary is-medium task-btn" onclick="selectTask('Pressing')">
+                Pressing on Senselmorph
+              </button>
+              <button class="button is-primary is-medium task-btn" onclick="selectTask('Human Wipe')">
+                Human Wipe on Mannequin
+              </button>
+              <button class="button is-primary is-medium task-btn" onclick="selectTask('Human Pat')">
+                Human Pat on Mannequin
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Case Selection -->
+        <div class="columns is-centered" style="margin-bottom: 20px;">
+          <div class="column is-8">
+            <div class="buttons is-centered" id="caseSelector">
+              <!-- Case buttons will be populated by JavaScript -->
+            </div>
+          </div>
+        </div>
+
+        <!-- Task Information -->
+        <div class="columns is-centered" style="margin-bottom: 30px;">
+          <div class="column is-8">
+            <div class="notification is-light" style="text-align: center; border-left: 4px solid #3273dc;">
+              <h4 class="title is-5" id="currentTaskName">Object Manipulation</h4>
+              <p id="currentTaskDesc">Grasping and manipulating various objects with force feedback</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Dual Video Display -->
+        <div class="columns is-centered">
+          <div class="column is-5">
+            <div class="box">
+              <h4 class="title is-5 has-text-centered">🎮 Control Video</h4>
+              <div class="video-wrapper" style="position: relative; border-radius: 8px; overflow: hidden;">
+                <video id="controlVideo" controls muted loop style="width: 100%; height: auto; max-height: 300px;">
+                  <source id="controlSource" src="static/data/realworld/senselmorph/move_1.mp4" type="video/mp4">
+                  Your browser does not support the video tag.
+                </video>
+              </div>
+              <div class="content" style="margin-top: 10px; text-align: center;">
+                <p style="font-size: 0.9em; color: #4a4a4a;">
+                  <strong>Type:</strong> Robot Control Demonstration
+                </p>
+                <p style="font-size: 0.8em; font-family: monospace; background: #f5f5f5; padding: 4px 8px; border-radius: 4px; display: inline-block;" id="controlFilename">
+                  move_1.mp4
+                </p>
+              </div>
+            </div>
+          </div>
+
+          <div class="column is-5">
+            <div class="box">
+              <h4 class="title is-5 has-text-centered">🔥 Force Map Video</h4>
+              <div class="video-wrapper" style="position: relative; border-radius: 8px; overflow: hidden;">
+                <video id="forceVideo" controls muted loop style="width: 100%; height: auto; max-height: 300px;">
+                  <source id="forceSource" src="static/data/realworld/senselmorph/move_force_1.mp4" type="video/mp4">
+                  Your browser does not support the video tag.
+                </source>
+              </div>
+              <div class="content" style="margin-top: 10px; text-align: center;">
+                <p style="font-size: 0.9em; color: #4a4a4a;">
+                  <strong>Type:</strong> Force Visualization
+                </p>
+                <p style="font-size: 0.8em; font-family: monospace; background: #f5f5f5; padding: 4px 8px; border-radius: 4px; display: inline-block;" id="forceFilename">
+                  move_force_1.mp4
+                </p>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Navigation Controls -->
+        <div class="columns is-centered" style="margin-top: 20px;">
+          <div class="column is-6">
+            <div class="buttons is-centered">
+              <button class="button is-dark" id="prevBtn" onclick="navigateCase(-1)">
+                <span class="icon">
+                  <i class="fas fa-chevron-left"></i>
+                </span>
+                <span>Previous Case</span>
+              </button>
+              <button class="button is-dark" id="nextBtn" onclick="navigateCase(1)">
+                <span>Next Case</span>
+                <span class="icon">
+                  <i class="fas fa-chevron-right"></i>
+                </span>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Status Information -->
+        <div class="columns is-centered" style="margin-top: 20px;">
+          <div class="column is-8">
+            <div class="notification is-info is-light" style="text-align: center;" id="statusInfo">
+              <p>Loaded Case 1: Movement Demo 1 for Object Manipulation</p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <script>
+      // Force Control Video Data Structure
+      const forceControlData = {
+        'Wiping': {
+          name: 'Wiping on Senselmorph',
+          description: 'Wiping on Senselmorph',
+          cases: [
+            {
+              id: 'case_001',
+              name: 'Case 1: Movement Demo 1',
+              control: 'static/data/realworld/senselmorph/move_1.mp4',
+              force: 'static/data/realworld/senselmorph/move_force_1.mp4'
+            },
+            {
+              id: 'case_002', 
+              name: 'Case 2: Movement Demo 2',
+              control: 'static/data/realworld/senselmorph/move_2.mp4',
+              force: 'static/data/realworld/senselmorph/move_force_2.mp4'
+            },
+            {
+              id: 'case_003',
+              name: 'Case 3: Movement Demo 3',
+              control: 'static/data/realworld/senselmorph/move_3.mp4',
+              force: 'static/data/realworld/senselmorph/move_force_3.mp4'
+            }
+          ]
+        },
+        'Pressing': {
+          name: 'Pressing on Senselmorph',
+          description: 'Pressing on Senselmorph',
+          cases: [
+            {
+              id: 'case_001',
+              name: 'Case 1: Press Demo 1',
+              control: 'static/data/realworld/senselmorph/press_1.mp4',
+              force: 'static/data/realworld/senselmorph/press_force_1.mp4'
+            },
+            {
+              id: 'case_002',
+              name: 'Case 2: Press Demo 2', 
+              control: 'static/data/realworld/senselmorph/press_2.mp4',
+              force: 'static/data/realworld/senselmorph/press_force_2.mp4'
+            },
+            {
+              id: 'case_003',
+              name: 'Case 3: Press Demo 3',
+              control: 'static/data/realworld/senselmorph/press_3.mp4',
+              force: 'static/data/realworld/senselmorph/press_force_3.mp4'
+            }
+          ]
+        },
+        'Human Wipe': {
+          name: 'Human Wipe on Mannequin',
+          description: 'Human hand wiping demonstrations on mannequin surface with force feedback',
+          cases: [
+            {
+              id: 'case_001',
+              name: 'Case 1: Human Wipe Demo 1',
+              control: 'static/data/realworld/mannequin/human_wipe_1.mp4',
+              force: 'static/data/realworld/mannequin/human_wipe_force_1.mp4'
+            },
+            {
+              id: 'case_002',
+              name: 'Case 2: Human Wipe Demo 2',
+              control: 'static/data/realworld/mannequin/human_wipe_2.mp4', 
+              force: 'static/data/realworld/mannequin/human_wipe_force_2.mp4'
+            },
+            {
+              id: 'case_003',
+              name: 'Case 3: Human Wipe Demo 3',
+              control: 'static/data/realworld/mannequin/human_wipe_3.mp4',
+              force: 'static/data/realworld/mannequin/human_wipe_force_3.mp4'
+            }
+          ]
+        },
+        'Human Pat': {
+          name: 'Human Pat on Mannequin',
+          description: 'Human hand patting demonstrations on mannequin surface with force feedback',
+          cases: [
+            {
+              id: 'case_001',
+              name: 'Case 1: Human Pat Demo 1',
+              control: 'static/data/realworld/mannequin/human_pat_1.mp4',
+              force: 'static/data/realworld/mannequin/human_pat_force_1.mp4'
+            },
+            {
+              id: 'case_002',
+              name: 'Case 2: Human Pat Demo 2',
+              control: 'static/data/realworld/mannequin/human_pat_2.mp4', 
+              force: 'static/data/realworld/mannequin/human_pat_force_2.mp4'
+            },
+            {
+              id: 'case_003',
+              name: 'Case 3: Human Pat Demo 3',
+              control: 'static/data/realworld/mannequin/human_pat_3.mp4',
+              force: 'static/data/realworld/mannequin/human_pat_force_3.mp4'
+            }
+          ]
+        }
+      };
+
+      let currentForceTask = 'Wiping';
+      let currentForceCaseIndex = 0;
+
+      // Select a force control task
+      function selectTask(taskKey) {
+        currentForceTask = taskKey;
+        currentForceCaseIndex = 0;
+
+        // Update task button states
+        document.querySelectorAll('.task-btn').forEach(btn => {
+          btn.classList.remove('is-info');
+          btn.classList.add('is-primary');
+        });
+        event.target.classList.remove('is-primary');
+        event.target.classList.add('is-info');
+
+        // Update task info
+        const task = forceControlData[taskKey];
+        document.getElementById('currentTaskName').textContent = task.name;
+        document.getElementById('currentTaskDesc').textContent = task.description;
+
+        // Populate case selector
+        populateForceCaseSelector();
+        
+        // Load first case
+        loadForceCase(0);
+        
+        updateForceStatus(`Selected task: ${task.name}`);
+      }
+
+      // Populate case selector buttons
+      function populateForceCaseSelector() {
+        const caseSelector = document.getElementById('caseSelector');
+        caseSelector.innerHTML = '';
+
+        const task = forceControlData[currentForceTask];
+        task.cases.forEach((caseData, index) => {
+          const button = document.createElement('button');
+          button.className = 'button is-small';
+          if (index === currentForceCaseIndex) {
+            button.classList.add('is-info');
+          } else {
+            button.classList.add('is-light');
+          }
+          button.textContent = caseData.name;
+          button.onclick = () => loadForceCase(index);
+          caseSelector.appendChild(button);
+        });
+      }
+
+      // Load a specific force control case
+      function loadForceCase(caseIndex) {
+        const task = forceControlData[currentForceTask];
+        if (caseIndex < 0 || caseIndex >= task.cases.length) return;
+
+        currentForceCaseIndex = caseIndex;
+        const caseData = task.cases[caseIndex];
+
+        // Update case button states
+        const caseButtons = document.querySelectorAll('#caseSelector .button');
+        caseButtons.forEach((btn, index) => {
+          btn.classList.remove('is-info', 'is-light');
+          btn.classList.add(index === caseIndex ? 'is-info' : 'is-light');
+        });
+
+        // Load videos
+        const controlVideo = document.getElementById('controlVideo');
+        const forceVideo = document.getElementById('forceVideo');
+        const controlSource = document.getElementById('controlSource');
+        const forceSource = document.getElementById('forceSource');
+
+        controlSource.src = caseData.control;
+        forceSource.src = caseData.force;
+
+        controlVideo.load();
+        forceVideo.load();
+
+        // Auto-play videos after loading
+        controlVideo.addEventListener('canplaythrough', function() {
+          controlVideo.play().catch(e => console.log('Auto-play prevented:', e));
+        }, { once: true });
+        
+        forceVideo.addEventListener('canplaythrough', function() {
+          forceVideo.play().catch(e => console.log('Auto-play prevented:', e));
+        }, { once: true });
+
+        // Update filenames
+        document.getElementById('controlFilename').textContent = caseData.control.split('/').pop();
+        document.getElementById('forceFilename').textContent = caseData.force.split('/').pop();
+
+        // Update navigation buttons
+        updateForceNavigationButtons();
+
+        updateForceStatus(`Loaded ${caseData.name} for ${task.name}`);
+      }
+
+      // Navigate between force control cases
+      function navigateCase(direction) {
+        const task = forceControlData[currentForceTask];
+        const newIndex = currentForceCaseIndex + direction;
+
+        if (newIndex >= 0 && newIndex < task.cases.length) {
+          loadForceCase(newIndex);
+        }
+      }
+
+      // Update navigation button states
+      function updateForceNavigationButtons() {
+        const task = forceControlData[currentForceTask];
+        const prevBtn = document.getElementById('prevBtn');
+        const nextBtn = document.getElementById('nextBtn');
+
+        prevBtn.disabled = currentForceCaseIndex === 0;
+        nextBtn.disabled = currentForceCaseIndex === task.cases.length - 1;
+      }
+
+      // Update status message
+      function updateForceStatus(message) {
+        document.getElementById('statusInfo').innerHTML = `<p>${message}</p>`;
+      }
+
+      // Initialize force control section
+      document.addEventListener('DOMContentLoaded', function() {
+        populateForceCaseSelector();
+        loadForceCase(0);
+        updateForceNavigationButtons();
+      });
+
+      // Keyboard shortcuts for force control
+      document.addEventListener('keydown', function(event) {
+        // Only handle if we're in the force control section
+        if (event.target.closest('.section')) {
+          switch(event.key) {
+            case 'ArrowLeft':
+              navigateCase(-1);
+              break;
+            case 'ArrowRight':
+              navigateCase(1);
+              break;
+            case ' ':
+              event.preventDefault();
+              // Toggle play/pause for both videos
+              const controlVideo = document.getElementById('controlVideo');
+              const forceVideo = document.getElementById('forceVideo');
+              if (controlVideo.paused) {
+                controlVideo.play();
+                forceVideo.play();
+              } else {
+                controlVideo.pause();
+                forceVideo.pause();
+              }
+              break;
+          }
+        }
+      });
+    </script>
+    <!--/ Force Control Video Viewer -->
+    
+    <script>
+      function changeVideo(videoSrc) {
+        const mainVideo = document.getElementById('main-video');
+        mainVideo.src = videoSrc;
+        mainVideo.muted = true;
+        mainVideo.loop = true;
+        mainVideo.load();
+        mainVideo.play();
+      }
+    </script> 
+    
+
+
+
+    <!-- Footer -->
+    <footer class="footer", style="padding: 40px 0;">
+      <div class="container">
+        <div class="columns is-centered">
+          <div class="column is-8">
+            <div class="content">
+              <p style="text-align: center;">
+                This website is designed based on
+                <a href="https://github.com/nerfies/nerfies.github.io">Nerfies</a>.
+                <br>
+                Thanks for visiting😊!
+                <span id="busuanzi_container_site_pv">
+                  Total Page Views: <span id="busuanzi_value_site_pv"></span>
+                </span>
+                <br>
+              </p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </footer>
+    <!--/ Footer -->
+
+  </body>
+</html>
