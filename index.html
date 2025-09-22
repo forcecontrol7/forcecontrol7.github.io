@@ -48,7 +48,7 @@
         <div class="container is-max-desktop">
           <div class="columns is-centered">
             <div class="column has-text-centered">
-              <h1 class="title is-1 publication-title">Force Prediction and Control of a Dexterous Hand for Physical Human-Robot Contact</h1>
+              <h1 class="title is-2 publication-title">Force Prediction and Control of a Dexterous Hand for Physical Human-Robot Contact</h1>
             </div>
           </div>
         </div>
@@ -56,7 +56,7 @@
     </section> 
 
     <!-- Intro Video -->
-    <!-- <section class="hero teaser">
+    <section class="hero teaser">
       <div class="container is-max-desktop">
         <div class="hero-body">
           <video id="intro" controls playsinline height="100%" class="video-with-border">
@@ -64,7 +64,7 @@
           </video>
         </div>
       </div>
-    </section> -->
+    </section>
 
     <section class="section">
       <div class="container is-max-desktop">
@@ -96,7 +96,7 @@
             <div class="content has-text-justified">
               <figure>
                 <img src="./static/image/pipeline.png" alt="Overview of the Force Control framework">
-                <!-- <figcaption style="font-style: normal; font-size: 0.95em;">We propose <strong>Web2Grasp</strong> for autonomously obtaining robot grasp data by reconstructing Hand-Object meshes from Web images, re-targeting the humand hand pose to a robot hand pose, and aligning the object mesh with a pseudo ground-truth object mesh obtained via text-to-3D approaches. We demonstrate that the resulting dataset obtained via web images and not requiring any robot-specific teleoperation enables training a supervised learning model with strong grasping performance both in simulation and in the real-world. </figcaption> -->
+                <figcaption style="font-style: normal; font-size: 0.95em;">Hierarchical Force-Aware Control: Training and Execution Pipeline. During training, we use collected robot trajectories, point clouds of the robot hand and human body, and force map information on the human to train all components. During execution, the Koopman operator predicts the robot trajectory from force features $\mathbf{v}_t$, while the differential optimization module refines the trajectory by adding corrective actions that minimize the gap between the predicted and target force maps.</figcaption>
               </figure>
             </div>
           </div>
@@ -121,7 +121,7 @@
           <div class="column">
             <h2 class="title is-3 has-text-centered">Force Prediction Results</h2>
             <p class="has-text-centered" style="margin-top: -10px; margin-bottom: 20px; font-style: italic;">
-              Comparison between ground truth and predicted force maps in simulation
+              Comparison between collected ground truth and predicted force maps in simulation
             </p>
           </div>
         </div>
@@ -134,13 +134,13 @@
                 Grasp
               </button>
               <button class="button is-success is-medium pred-task-btn" onclick="selectPredTask('open')">
-                Open
+                Change Force
               </button>
               <button class="button is-success is-medium pred-task-btn" onclick="selectPredTask('move')">
-                Move
+                Wipe
               </button>
               <button class="button is-success is-medium pred-task-btn" onclick="selectPredTask('pat')">
-                Pat
+                Fingers Pat
               </button>
             </div>
           </div>
@@ -155,23 +155,15 @@
           </div>
         </div>
 
-        <!-- Task Information -->
-        <div class="columns is-centered" style="margin-bottom: 30px;">
-          <div class="column is-8">
-            <div class="notification is-light" style="text-align: center; border-left: 4px solid #48c774;">
-              <h4 class="title is-5" id="currentPredTaskName">Grasp Force Prediction</h4>
-              <p id="currentPredTaskDesc">Comparing ground truth and predicted force maps for grasping tasks</p>
-            </div>
-          </div>
-        </div>
+
 
         <!-- Dual Video Display -->
         <div class="columns is-centered">
-          <div class="column is-5">
+          <div class="column is-6">
             <div class="box">
               <h4 class="title is-5 has-text-centered">🎯 Ground Truth</h4>
               <div class="video-wrapper" style="position: relative; border-radius: 8px; overflow: hidden;">
-                <video id="gtVideo" controls muted loop style="width: 100%; height: auto; max-height: 300px;">
+                <video id="gtVideo" controls muted loop style="width: 100%; height: auto; max-height: 450px;">
                   <source id="gtSource" src="static/data/sim_pred/grasp_gt_0.mp4" type="video/mp4">
                   Your browser does not support the video tag.
                 </video>
@@ -180,18 +172,15 @@
                 <p style="font-size: 0.9em; color: #4a4a4a;">
                   <strong>Type:</strong> Ground Truth Force Map
                 </p>
-                <p style="font-size: 0.8em; font-family: monospace; background: #f5f5f5; padding: 4px 8px; border-radius: 4px; display: inline-block;" id="gtFilename">
-                  grasp_gt_0.mp4
-                </p>
               </div>
             </div>
           </div>
 
-          <div class="column is-5">
+          <div class="column is-6">
             <div class="box">
               <h4 class="title is-5 has-text-centered">🤖 Predicted</h4>
               <div class="video-wrapper" style="position: relative; border-radius: 8px; overflow: hidden;">
-                <video id="predVideo" controls muted loop style="width: 100%; height: auto; max-height: 300px;">
+                <video id="predVideo" controls muted loop style="width: 100%; height: auto; max-height: 450px;">
                   <source id="predSource" src="static/data/sim_pred/grasp_pred_0.mp4" type="video/mp4">
                   Your browser does not support the video tag.
                 </video>
@@ -199,9 +188,6 @@
               <div class="content" style="margin-top: 10px; text-align: center;">
                 <p style="font-size: 0.9em; color: #4a4a4a;">
                   <strong>Type:</strong> Predicted Force Map
-                </p>
-                <p style="font-size: 0.8em; font-family: monospace; background: #f5f5f5; padding: 4px 8px; border-radius: 4px; display: inline-block;" id="predFilename">
-                  grasp_pred_0.mp4
                 </p>
               </div>
             </div>
@@ -224,15 +210,6 @@
                   <i class="fas fa-chevron-right"></i>
                 </span>
               </button>
-            </div>
-          </div>
-        </div>
-
-        <!-- Status Information -->
-        <div class="columns is-centered" style="margin-top: 20px;">
-          <div class="column is-8">
-            <div class="notification is-success is-light" style="text-align: center;" id="predStatusInfo">
-              <p>Loaded Case 0: Grasp Force Prediction</p>
             </div>
           </div>
         </div>
@@ -358,8 +335,6 @@
 
         // Update task info
         const task = forcePredictionData[taskKey];
-        document.getElementById('currentPredTaskName').textContent = task.name;
-        document.getElementById('currentPredTaskDesc').textContent = task.description;
 
         // Populate case selector
         populatePredCaseSelector();
@@ -367,7 +342,7 @@
         // Load first case
         loadPredCase(0);
         
-        updatePredStatus(`Selected task: ${task.name}`);
+        updatePredStatus(`Selected task`);
       }
 
       // Populate case selector buttons
@@ -433,7 +408,7 @@
         // Update navigation buttons
         updatePredNavigationButtons();
 
-        updatePredStatus(`Loaded ${caseData.name} for ${task.name}`);
+        updatePredStatus(`Loaded ${caseData.name}`);
       }
 
       // Navigate between force prediction cases
@@ -502,14 +477,144 @@
     </script>
     <!--/ Force Prediction Video Viewer -->
 
+    <!-- Simulation Force Control -->
+    <section class="section">
+      <div class="container is-max-desktop">
+        <div class="columns is-centered">
+          <div class="column">
+            <h2 class="title is-3 has-text-centered">Simulation Force Control</h2>
+            <p class="has-text-centered" style="margin-top: -10px; margin-bottom: 20px; font-style: italic;">
+              Visualization of Absolute Differences Between Target and Current Force Maps Across Different Tasks. Ideally, the absence of colored points indicates no force difference. All tasks exhibit fewer non-zero force points in the difference map at the last step.
+            </p>
+          </div>
+        </div>
+
+        <!-- Scrollable Video Panel -->
+        <div class="sim-control-container" style="position: relative; margin: 20px 0; overflow: hidden; width: 100%; max-width: 1400px; margin-left: auto; margin-right: auto;">
+          <!-- Left Arrow -->
+          <button id="sim-carousel-left" class="sim-carousel-arrow sim-carousel-left" style="position: absolute; left: 10px; top: 50%; transform: translateY(-50%); z-index: 10; background: rgba(102, 192, 255, 0.8); border: none; border-radius: 50%; width: 50px; height: 50px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 20px; color: white;">
+            &#8249;
+          </button>
+          
+          <!-- Right Arrow -->
+          <button id="sim-carousel-right" class="sim-carousel-arrow sim-carousel-right" style="position: absolute; right: 10px; top: 50%; transform: translateY(-50%); z-index: 10; background: rgba(102, 192, 255, 0.8); border: none; border-radius: 50%; width: 50px; height: 50px; cursor: pointer; display: flex; align-items: center; justify-content: center; font-size: 20px; color: white;">
+            &#8250;
+          </button>
+
+          <!-- Scrollable Video Row -->
+          <div id="sim-video-carousel" style="display: flex; padding: 20px 80px; transition: transform 0.3s ease; overflow: visible; width: max-content;">
+            <!-- Video items will be populated by JavaScript -->
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <script>
+      // Simulation Control Video Data
+      const simControlData = [
+        {
+          id: 'pat',
+          name: 'Fingers Pat Task Control',
+          description: 'Simulation of patting motions with force feedback',
+          video: 'static/data/sim_control/good_pat_h264.mp4'
+        },
+        {
+          id: 'open',
+          name: 'Force Change Task Control', 
+          description: 'Simulation of opening motions with force control',
+          video: 'static/data/sim_control/good_open_h264.mp4'
+        },
+        {
+          id: 'move',
+          name: 'Wipe Task Control',
+          description: 'Simulation of movement tasks with force guidance',
+          video: 'static/data/sim_control/good_move_h264.mp4'
+        },
+        {
+          id: 'press',
+          name: 'Thumb Press Task Control',
+          description: 'Simulation of pressing actions with force control',
+          video: 'static/data/sim_control/good_press_h264.mp4'
+        }
+      ];
+
+      let simCurrentIndex = 0;
+      const simItemsPerView = 2;
+      const simItemWidth = 650; // 610px video + 40px margins
+
+      // Create simulation carousel items
+      function createSimCarouselItems() {
+        const simCarousel = document.getElementById('sim-video-carousel');
+        simCarousel.innerHTML = '';
+        
+        simControlData.forEach((item, index) => {
+          const carouselItem = document.createElement('div');
+          carouselItem.className = 'sim-carousel-item';
+          carouselItem.style.cssText = 'flex: 0 0 610px; display: flex; flex-direction: column; align-items: center; margin: 0 20px;';
+          
+          carouselItem.innerHTML = `
+            <div class="box" style="width: 100%; margin-bottom: 0;">
+              <h4 class="title is-5 has-text-centered" style="margin-bottom: 15px;">${item.name}</h4>
+              <div class="video-wrapper" style="position: relative; border-radius: 8px; overflow: hidden;">
+                <video controls muted loop style="width: 100%; height: auto; max-height: 450px;" data-video-id="${item.id}">
+                  <source src="${item.video}" type="video/mp4">
+                  Your browser does not support the video tag.
+                </video>
+              </div>
+
+            </div>
+          `;
+          
+          simCarousel.appendChild(carouselItem);
+        });
+        
+        console.log(`Created ${simControlData.length} simulation control items`);
+      }
+
+      // Scroll simulation carousel
+      function scrollSimCarousel(direction) {
+        // Calculate max index to ensure the last video is fully visible
+        // For 4 videos with 2 per view, we need positions 0, 1, 2 (3 positions total)
+        const maxIndex = Math.max(0, simControlData.length - 1);
+        
+        if (direction === 'left') {
+          simCurrentIndex = Math.max(0, simCurrentIndex - 1);
+        } else if (direction === 'right') {
+          simCurrentIndex = Math.min(maxIndex, simCurrentIndex + 1);
+        }
+        
+        const translateX = -(simCurrentIndex * simItemWidth);
+        document.getElementById('sim-video-carousel').style.transform = `translateX(${translateX}px)`;
+        
+        // Update arrow visibility
+        const leftArrow = document.getElementById('sim-carousel-left');
+        const rightArrow = document.getElementById('sim-carousel-right');
+        leftArrow.style.opacity = simCurrentIndex === 0 ? '0.5' : '1';
+        rightArrow.style.opacity = simCurrentIndex === maxIndex ? '0.5' : '1';
+        
+        console.log(`Simulation carousel: index ${simCurrentIndex}, max ${maxIndex}, total videos ${simControlData.length}`);
+      }
+
+      // Event listeners for simulation carousel
+      document.getElementById('sim-carousel-left').addEventListener('click', () => scrollSimCarousel('left'));
+      document.getElementById('sim-carousel-right').addEventListener('click', () => scrollSimCarousel('right'));
+
+      // Initialize simulation carousel
+      document.addEventListener('DOMContentLoaded', function() {
+        createSimCarouselItems();
+        scrollSimCarousel(); // Initialize arrow states
+      });
+    </script>
+    <!--/ Simulation Force Control -->
+
     <!-- Force Control Video Viewer -->
     <section class="section">
       <div class="container is-max-desktop">
         <div class="columns is-centered">
           <div class="column">
-            <h2 class="title is-3 has-text-centered">Force Control Demonstrations</h2>
+            <h2 class="title is-3 has-text-centered">Real-World Force Control</h2>
             <p class="has-text-centered" style="margin-top: -10px; margin-bottom: 20px; font-style: italic;">
-              Interactive visualization of robotic force control with different tasks and cases
+              Real-world force control videos with different tasks and cases
             </p>
           </div>
         </div>
@@ -519,16 +624,16 @@
           <div class="column is-10">
             <div class="buttons is-centered" id="taskSelector">
               <button class="button is-primary is-medium task-btn active" onclick="selectTask('Wiping')">
-                Wiping on Senselmorph
+                Sensel Wipe
               </button>
               <button class="button is-primary is-medium task-btn" onclick="selectTask('Pressing')">
-                Pressing on Senselmorph
+                Sensel Press
               </button>
               <button class="button is-primary is-medium task-btn" onclick="selectTask('Human Wipe')">
-                Human Wipe on Mannequin
+                Manikin Wipe
               </button>
               <button class="button is-primary is-medium task-btn" onclick="selectTask('Human Pat')">
-                Human Pat on Mannequin
+                Manikin Pat
               </button>
             </div>
           </div>
@@ -547,8 +652,7 @@
         <div class="columns is-centered" style="margin-bottom: 30px;">
           <div class="column is-8">
             <div class="notification is-light" style="text-align: center; border-left: 4px solid #3273dc;">
-              <h4 class="title is-5" id="currentTaskName">Object Manipulation</h4>
-              <p id="currentTaskDesc">Grasping and manipulating various objects with force feedback</p>
+              <p id="currentTaskDesc" style="margin: 0; font-size: 1.1em;">LEAP hand mounted on a 6-DoF XArm performing wiping tasks on a Sensel Morph device, which provides both contact location and force measurements.</p>
             </div>
           </div>
         </div>
@@ -566,30 +670,24 @@
               </div>
               <div class="content" style="margin-top: 10px; text-align: center;">
                 <p style="font-size: 0.9em; color: #4a4a4a;">
-                  <strong>Type:</strong> Robot Control Demonstration
-                </p>
-                <p style="font-size: 0.8em; font-family: monospace; background: #f5f5f5; padding: 4px 8px; border-radius: 4px; display: inline-block;" id="controlFilename">
-                  move_1.mp4
+                  <strong>Type:</strong> Robot Control Video
                 </p>
               </div>
             </div>
           </div>
 
-          <div class="column is-5">
+          <div class="column is-7">
             <div class="box">
               <h4 class="title is-5 has-text-centered">🔥 Force Map Video</h4>
               <div class="video-wrapper" style="position: relative; border-radius: 8px; overflow: hidden;">
-                <video id="forceVideo" controls muted loop style="width: 100%; height: auto; max-height: 300px;">
+                <video id="forceVideo" controls muted loop style="width: 100%; height: auto; max-height: 450px;">
                   <source id="forceSource" src="static/data/realworld/senselmorph/move_force_1.mp4" type="video/mp4">
                   Your browser does not support the video tag.
                 </source>
               </div>
               <div class="content" style="margin-top: 10px; text-align: center;">
                 <p style="font-size: 0.9em; color: #4a4a4a;">
-                  <strong>Type:</strong> Force Visualization
-                </p>
-                <p style="font-size: 0.8em; font-family: monospace; background: #f5f5f5; padding: 4px 8px; border-radius: 4px; display: inline-block;" id="forceFilename">
-                  move_force_1.mp4
+                  <strong>Type:</strong> Force Map Video (Left: Target Force Map at the last step, Right: Observed Force Map During Control)
                 </p>
               </div>
             </div>
@@ -616,14 +714,6 @@
           </div>
         </div>
 
-        <!-- Status Information -->
-        <div class="columns is-centered" style="margin-top: 20px;">
-          <div class="column is-8">
-            <div class="notification is-info is-light" style="text-align: center;" id="statusInfo">
-              <p>Loaded Case 1: Movement Demo 1 for Object Manipulation</p>
-            </div>
-          </div>
-        </div>
       </div>
     </section>
 
@@ -631,96 +721,92 @@
       // Force Control Video Data Structure
       const forceControlData = {
         'Wiping': {
-          name: 'Wiping on Senselmorph',
-          description: 'Wiping on Senselmorph',
+          description: 'LEAP hand mounted on a 6-DoF XArm performing wiping tasks on a Sensel Morph device, which provides both contact location and force measurements. ',
           cases: [
             {
               id: 'case_001',
-              name: 'Case 1: Movement Demo 1',
+              name: 'Case 1',
               control: 'static/data/realworld/senselmorph/move_1.mp4',
               force: 'static/data/realworld/senselmorph/move_force_1.mp4'
             },
             {
               id: 'case_002', 
-              name: 'Case 2: Movement Demo 2',
+              name: 'Case 2',
               control: 'static/data/realworld/senselmorph/move_2.mp4',
               force: 'static/data/realworld/senselmorph/move_force_2.mp4'
             },
             {
               id: 'case_003',
-              name: 'Case 3: Movement Demo 3',
+              name: 'Case 3',
               control: 'static/data/realworld/senselmorph/move_3.mp4',
               force: 'static/data/realworld/senselmorph/move_force_3.mp4'
             }
           ]
         },
         'Pressing': {
-          name: 'Pressing on Senselmorph',
-          description: 'Pressing on Senselmorph',
+          description: 'LEAP hand mounted on a 6-DoF XArm performing pressing tasks on a Sensel Morph device, which provides both contact location and force measurements.',
           cases: [
             {
               id: 'case_001',
-              name: 'Case 1: Press Demo 1',
+              name: 'Case 1',
               control: 'static/data/realworld/senselmorph/press_1.mp4',
               force: 'static/data/realworld/senselmorph/press_force_1.mp4'
             },
             {
               id: 'case_002',
-              name: 'Case 2: Press Demo 2', 
+              name: 'Case 2', 
               control: 'static/data/realworld/senselmorph/press_2.mp4',
               force: 'static/data/realworld/senselmorph/press_force_2.mp4'
             },
             {
               id: 'case_003',
-              name: 'Case 3: Press Demo 3',
+              name: 'Case 3',
               control: 'static/data/realworld/senselmorph/press_3.mp4',
               force: 'static/data/realworld/senselmorph/press_force_3.mp4'
             }
           ]
         },
         'Human Wipe': {
-          name: 'Human Wipe on Mannequin',
-          description: 'Human hand wiping demonstrations on mannequin surface with force feedback',
+          description: 'DexKit hand equipped with a commercially available tactile sensing glove, executing wiping motions on a manikin',
           cases: [
             {
               id: 'case_001',
-              name: 'Case 1: Human Wipe Demo 1',
+              name: 'Case 1',
               control: 'static/data/realworld/mannequin/human_wipe_1.mp4',
               force: 'static/data/realworld/mannequin/human_wipe_force_1.mp4'
             },
             {
               id: 'case_002',
-              name: 'Case 2: Human Wipe Demo 2',
+              name: 'Case 2',
               control: 'static/data/realworld/mannequin/human_wipe_2.mp4', 
               force: 'static/data/realworld/mannequin/human_wipe_force_2.mp4'
             },
             {
               id: 'case_003',
-              name: 'Case 3: Human Wipe Demo 3',
+              name: 'Case 3',
               control: 'static/data/realworld/mannequin/human_wipe_3.mp4',
               force: 'static/data/realworld/mannequin/human_wipe_force_3.mp4'
             }
           ]
         },
         'Human Pat': {
-          name: 'Human Pat on Mannequin',
-          description: 'Human hand patting demonstrations on mannequin surface with force feedback',
+          description: 'DexKit soft hand equipped with a commercially available tactile sensing glove, executing patting motions on a manikin',
           cases: [
             {
               id: 'case_001',
-              name: 'Case 1: Human Pat Demo 1',
+              name: 'Case 1',
               control: 'static/data/realworld/mannequin/human_pat_1.mp4',
               force: 'static/data/realworld/mannequin/human_pat_force_1.mp4'
             },
             {
               id: 'case_002',
-              name: 'Case 2: Human Pat Demo 2',
+              name: 'Case 2',
               control: 'static/data/realworld/mannequin/human_pat_2.mp4', 
               force: 'static/data/realworld/mannequin/human_pat_force_2.mp4'
             },
             {
               id: 'case_003',
-              name: 'Case 3: Human Pat Demo 3',
+              name: 'Case 3',
               control: 'static/data/realworld/mannequin/human_pat_3.mp4',
               force: 'static/data/realworld/mannequin/human_pat_force_3.mp4'
             }
@@ -746,7 +832,6 @@
 
         // Update task info
         const task = forceControlData[taskKey];
-        document.getElementById('currentTaskName').textContent = task.name;
         document.getElementById('currentTaskDesc').textContent = task.description;
 
         // Populate case selector
@@ -755,7 +840,7 @@
         // Load first case
         loadForceCase(0);
         
-        updateForceStatus(`Selected task: ${task.name}`);
+        updateForceStatus(`Selected task`);
       }
 
       // Populate case selector buttons
@@ -821,7 +906,7 @@
         // Update navigation buttons
         updateForceNavigationButtons();
 
-        updateForceStatus(`Loaded ${caseData.name} for ${task.name}`);
+        updateForceStatus(`Loaded ${caseData.name}`);
       }
 
       // Navigate between force control cases
