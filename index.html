@@ -142,6 +142,9 @@
               <button class="button is-success is-medium pred-task-btn" onclick="selectPredTask('pat')">
                 Fingers Pat
               </button>
+              <button class="button is-success is-medium pred-task-btn" onclick="selectPredTask('press')">
+                Thumb Press
+              </button>
             </div>
           </div>
         </div>
@@ -312,6 +315,30 @@
               name: 'Case 2',
               gt: 'static/data/sim_pred/pat_gt_2.mp4',
               pred: 'static/data/sim_pred/pat_pred_2.mp4'
+            }
+          ]
+        },
+        'press': {
+          name: 'Press Force Prediction',
+          description: 'Comparing ground truth and predicted force maps for pressing tasks',
+          cases: [
+            {
+              id: 'case_0',
+              name: 'Case 0',
+              gt: 'static/data/sim_pred/press_gt_0.mp4',
+              pred: 'static/data/sim_pred/press_pred_0.mp4'
+            },
+            {
+              id: 'case_1',
+              name: 'Case 1',
+              gt: 'static/data/sim_pred/press_gt_1.mp4',
+              pred: 'static/data/sim_pred/press_pred_1.mp4'
+            },
+            {
+              id: 'case_2',
+              name: 'Case 2',
+              gt: 'static/data/sim_pred/press_gt_2.mp4',
+              pred: 'static/data/sim_pred/press_pred_2.mp4'
             }
           ]
         }
@@ -535,6 +562,12 @@
           name: 'Thumb Press Task Control',
           description: 'Simulation of pressing actions with force control',
           video: 'static/data/sim_control/good_press_h264.mp4'
+        },
+        {
+          id: 'grasp',
+          name: 'Grasp Task Control',
+          description: 'Simulation of grasping actions with force control',
+          video: 'static/data/sim_control/grasp_control.mp4'
         }
       ];
 
