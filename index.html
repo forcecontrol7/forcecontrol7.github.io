@@ -74,11 +74,11 @@
             <h2 class="title is-3">Abstract</h2>
             <div class="content has-text-justified">
               <p>
-                Safe and effective physical interaction between dexterous robot hands and the human body will be essential for assistive applications. However, it remains a significant challenge due to complexities in accurately estimating and controlling contact forces on deformable surfaces with high-dimensional manipulators. 
-                We propose a force-aware control framework composed of two key components: (1) a force predictor that estimates a contact force map from point-cloud observations, and (2) a hierarchical force controller. 
+                With labor shortages and aging populations increasing the need for robotic assistance, dexterous robot hands hold promise for contact-rich, assistive tasks. Yet accurately estimating and controlling their interaction forces with the human body remains challenging. 
+                To address this challenge, we propose a force-aware control framework composed of two key components: (1) a force predictor that estimates a contact force map from point-cloud observations, and (2) a hierarchical force controller. 
                 This controller uniquely integrates a learning-based Koopman model for long-horizon trajectory planning with a differentiable optimization module that uses the predicted forces to compute fine-grained corrective actions. 
-                This allows the robot to achieve a target force distribution with high precision. We evaluate our method across five representative human-robot interaction tasks in simulation, and on real-world hardware using a pressure-sensing tablet and a tactile glove on a manikin. 
-                Results suggest that the proposed framework achieves accurate force prediction and control, significantly outperforming established baselines. 
+                We evaluate the framework across five representative human-robot interaction tasks in simulation, and on real-world hardware using a pressure-sensing tablet and a tactile glove on a manikin. 
+                Results suggest that the proposed framework achieves accurate force prediction and control, outperforming the baselines. 
               </p>
             </div>
           </div>
@@ -96,7 +96,7 @@
             <div class="content has-text-justified">
               <figure>
                 <img src="./static/image/pipeline.png" alt="Overview of the Force Control framework">
-                <figcaption style="font-style: normal; font-size: 0.95em;">Hierarchical Force-Aware Control: Training and Execution Pipeline. During training, we use collected robot trajectories, point clouds of the robot hand and human body, and force map information on the human to train all components. During execution, the Koopman operator predicts the robot trajectory from force features $\mathbf{v}_t$, while the differential optimization module refines the trajectory by adding corrective actions that minimize the gap between the predicted and target force maps.</figcaption>
+                <figcaption style="font-style: normal; font-size: 0.95em;">Data Collection, Training and Execution Pipeline. During training, we use collected robot trajectories (blue box), point clouds of the robot hand and human body, and force map information on the human to train all force predictor and controller (yellow box). During execution, the Koopman operator predicts the robot trajectory from force features v_t, while the differential optimization applies corrective actions to minimize the difference between the predicted and target force maps (light green box).</figcaption>
               </figure>
             </div>
           </div>
@@ -104,14 +104,6 @@
         <!--/ Overview -->
       </div>
     </section>
-
-
-
-
-
-
-
-
 
 
     <!-- Force Prediction Video Viewer -->
